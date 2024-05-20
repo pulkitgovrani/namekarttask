@@ -1,0 +1,35 @@
+
+.result-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .result-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .result-item h3 {
+    margin: 0 0 10px;
+  }
+  
+  .result-item .error {
+    color: red;
+  }
+  
+  .result-item .data {
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .result-item .data div {
+    margin-bottom: 5px;
+  }
+  
+  .result-item .data div span {
+    font-weight: bold;
+  }
+  

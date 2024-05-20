@@ -1,8 +1,44 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import ResultList from './ResultList';
 
 function App() {
+  const [domains, setDomains] = useState('');
+  const [results, setResults] = useState([]);
+
+  const handleChange = (event) => {
+    setDomains(event.target.value);
+  };
+
+  const handleCheckDomains = async () => {
+    const domainList = domains
+    .split('\n')
+    .map(domain => domain.trim().toLowerCase().replace('.com', ''))
+    .filter(domain => domain !== '');
+    console.log(domainList);
+    const resultPromises = domainList.map(domain => checkDomain(domain));
+    
+    try {
+      const results = await Promise.all(resultPromises);
+      setResults(results);
+    } catch (error) {
+      console.error('Error checking domains', error);
+    }
+  };
+
+  const checkDomain = async (domain) => {
+    try {
+      let username=domain;
+      const response = await axios.post('http://localhost:5000/scrape', { username })
+      console.log(response);
+      return { domain, data: response.data };
+    } catch (error) {
+      return { domain, error: error.message };
+    }
+  };
+
+/*
   const [username, setUsername] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [data, setData] = useState(null);
@@ -29,9 +65,11 @@ function App() {
       setData(null);
     }
   };
-
+*/
   return (
     <div className="App">
+      
+      {/*
       <header className="App-header">
         <h1>Instagram and LinkedIn Scraper</h1>
         <form onSubmit={handleSubmit}>
@@ -83,6 +121,35 @@ function App() {
           </div>
         )}
       </header>
+        */}
+<div className='top-heading'>
+Get Both LinkedIn & Instagram Statistics with Domain names as the UserNames
+</div>
+<div className="container">
+
+      <textarea
+        value={domains}
+        onChange={handleChange}
+        placeholder="Enter domain names, one per line"
+        rows="10"
+        cols="50"
+        className="textarea"
+      />
+      <br />
+      <button onClick={handleCheckDomains} className="button">
+        Get Social Statistics Of these Companies
+      </button>
+      <div className="results">
+        <h3>Results:</h3>
+        <ul>
+          {results.map((result, index) => (
+            <li key={index} className="result-item">
+              {result.domain}: {result.error ? `Error: ${result.error}` :  <ResultList results={results} />}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
     </div>
   );
 }
